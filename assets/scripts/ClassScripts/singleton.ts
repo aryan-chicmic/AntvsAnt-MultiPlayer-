@@ -57,6 +57,8 @@ export class singleton extends Component {
   multiplayer: boolean = false;
   script: antTypeButton;
   whichActor;
+  Loader:Node;
+  TwoPlayer:Node;
   private singleton() {}
   static getInstance(): singleton {
     if (!singleton.instance) {

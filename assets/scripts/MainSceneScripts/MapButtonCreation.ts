@@ -1,7 +1,7 @@
 /**
  * @description Initial Map Buttons Creation
  */
-import { _decorator, Component, Node, instantiate, Prefab, Size } from "cc";
+import { _decorator, Component, Node, instantiate, Prefab, Size, Button } from "cc";
 import AntvsAnt from "../AntvsAnt/PhotonClass";
 import AudioControllerObject from "../ClassScripts/AudioController";
 import { singleton } from "../ClassScripts/singleton";
@@ -43,6 +43,8 @@ export class MapButtonCreation extends Component {
   }
   start() {
     this.SingletonObject = singleton.getInstance();
+    this.SingletonObject.Loader = this.loader;
+    this.SingletonObject.TwoPlayer = this.player2_node;
 
     this.loader.active = false;
     this.SERVER = this.SingletonObject.photonobj;
@@ -53,7 +55,9 @@ export class MapButtonCreation extends Component {
   onClickedPlayerOneButton() {
     //console.log("photon class", this.SERVER);
     this.SERVER.connectToServer();
-    this.SingletonObject.multiplayer = true
+    this.SingletonObject.multiplayer = true;
+    this.loader.active = true;
+    this.player2_node.getComponent(Button).interactable = false;
     console.log("Player One Under process");
     this.buttonClickedSoundEffect("buttonClickSound");
   }
@@ -74,11 +78,7 @@ export class MapButtonCreation extends Component {
 
     this.loader.active = false;
 
-    for (
-      var mapbuttoncount = 1;
-      mapbuttoncount <= this.countofMaps;
-      mapbuttoncount++
-    ) {
+    for (var mapbuttoncount = 1; mapbuttoncount <= this.countofMaps; mapbuttoncount++) {
       this.button = instantiate(this.mapButtonPrefab);
 
       this.button

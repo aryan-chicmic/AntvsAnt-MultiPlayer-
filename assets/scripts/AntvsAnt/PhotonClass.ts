@@ -1,6 +1,7 @@
 import { singleton } from "../ClassScripts/singleton";
 // <reference path="Photon/Photon-Javascript_SDK.d.ts"/>
 import cloudAppInfo from "../AntvsAnt/cloud-app-info";
+import { Button } from "cc";
 // fetching app info global variable while in global context
 
 export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
@@ -41,8 +42,12 @@ export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
 
   onActorJoin(actor: Photon.LoadBalancing.Actor) {
     console.log("actor " + actor.actorNr + " joined");
-
     this.leave = 0;
+    if (actor.actorNr == 2) {
+      singleton.getInstance().Loader.active = false;
+      singleton.getInstance().TwoPlayer.getComponent(Button).interactable =
+        true;
+    }
   }
 
   onActorLeave(actor: Photon.LoadBalancing.Actor) {
