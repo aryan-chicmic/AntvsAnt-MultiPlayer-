@@ -13,7 +13,7 @@ import {
 } from "cc";
 import { coinUpdater } from "../MapSceneComponents/coinUpdater";
 import AudioControllerObject from "./AudioController";
-import { MultiPlayerEvent } from "./constants";
+import { MultiPlayerEvent, PLAYER } from "./constants";
 import { singleton } from "./singleton";
 const { ccclass, property } = _decorator;
 
@@ -21,8 +21,7 @@ const { ccclass, property } = _decorator;
 export class menuButton extends Component {
   @property({ type: Node })
   SettingPopUp: Node = null;
-  @property({ type: Prefab })
-  Timer: Prefab = null;
+
   @property({ type: Node })
   Coinhandler: Node = null;
   AgainClickedSettingButton: boolean = false;
@@ -30,7 +29,7 @@ export class menuButton extends Component {
   actor: number;
   seconds = 20;
   sec: string = "";
-  temp: Node[] = [];
+  check: boolean = false;
   onLoad() {}
   start() {
     this.SingletonObject = singleton.getInstance();
@@ -88,8 +87,9 @@ export class menuButton extends Component {
         this.schedule(this.timeCounter, 0.5);
       }
       console.log("Game paused Menu Showed");
-
-      this.gamePause();
+      if (!this.check) {
+        this.gamePause();
+      }
     } else {
       this.SettingPopUp.active = false;
       this.AgainClickedSettingButton = false;
@@ -122,12 +122,16 @@ export class menuButton extends Component {
       this.SingletonObject.photonobj.raiseEvent(MultiPlayerEvent.GamePauseCounter, "PauseCounter", {
         targetActors: [this.actor],
       });
+
       this.SingletonObject.PauseCounter_B -= 1;
+      this.SettingPopUp.getChildByName("PauseNode").children.length -= 1;
     } else {
       this.SingletonObject.photonobj.raiseEvent(MultiPlayerEvent.GamePauseCounter, "PauseCounter", {
         targetActors: [this.actor],
       });
+
       this.SingletonObject.PauseCounter_A -= 1;
+      this.SettingPopUp.getChildByName("PauseNode").children.length -= 1;
     }
     console.log(this.SingletonObject.PauseCounter_A, this.SingletonObject.PauseCounter_B);
 
@@ -160,7 +164,34 @@ export class menuButton extends Component {
       this.seconds = -1;
     }
   }
-  update(deltaTime: number) {}
+
+  // if (!this.SingletonObj.multiplayer) {
+
+  update(deltaTime: number) {
+    // console.log(
+    //   this.SingletonObject.AntPlayer,
+    //   this.actor,
+    //   this.SingletonObject.PauseCounter_A,
+    //   this.SingletonObject.PauseCounter_B,
+    //   this.SingletonObject.multiplayer,
+    //   this.check
+    // );
+
+    if (this.actor == 2 && this.SingletonObject.PauseCounter_A <= 0) {
+      // console.log("IN UPDATE");
+
+      this.check = true;
+      // this.SettingPopUp.getChildByName("Resume").active = false;
+    }
+    if (
+      this.actor == 1 &&
+      this.SingletonObject.PauseCounter_B <= 0 &&
+      !this.SingletonObject.multiplayer
+    ) {
+      this.check = true;
+      // this.SettingPopUp.getChildByName("Resume").active = false;
+    }
+  }
   restartGame() {
     this.buttonClickedSoundEffect("buttonClickSound");
     this.node.destroy();

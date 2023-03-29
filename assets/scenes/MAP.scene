@@ -3254,6 +3254,10 @@
     "audiosource": {
       "__id__": 82
     },
+    "PausePopup": {
+      "__uuid__": "fc8de5b8-d0e7-42eb-be8a-e5deed2c9e84",
+      "__expectedType__": "cc.Prefab"
+    },
     "hiveHolder_A": {
       "__id__": 41
     },

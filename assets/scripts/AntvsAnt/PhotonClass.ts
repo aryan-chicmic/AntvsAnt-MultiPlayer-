@@ -1,7 +1,7 @@
 import { singleton } from "../ClassScripts/singleton";
 // <reference path="Photon/Photon-Javascript_SDK.d.ts"/>
 import cloudAppInfo from "../AntvsAnt/cloud-app-info";
-import { Button } from "cc";
+import { Button, director, instantiate } from "cc";
 import { MultiPlayerEvent } from "../ClassScripts/constants";
 import { coinUpdater } from "../MapSceneComponents/coinUpdater";
 // fetching app info global variable while in global context
@@ -13,6 +13,7 @@ export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
   details;
   leave = 0;
   MapClickCount = 0;
+  popUp;
   constructor() {
     console.log("Constructor callss");
     super(1, "7f112f40-1f4b-491d-abfb-f9e38cb5ac8f", "1.0");
@@ -45,9 +46,15 @@ export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
   onActorJoin(actor: Photon.LoadBalancing.Actor) {
     console.log("actor " + actor.actorNr + " joined");
     this.leave = 0;
+
     if (actor.actorNr == 2) {
-      singleton.getInstance().Loader.active = false;
-      singleton.getInstance().TwoPlayer.getComponent(Button).interactable = true;
+      director.loadScene("MAP");
+
+      setTimeout(() => {
+        singleton.getInstance().Loader.active = false;
+        singleton.getInstance().Coins1.getComponent(coinUpdater).updationStart();
+        singleton.getInstance().Coins2.getComponent(coinUpdater).updationStart();
+      }, 500);
     }
   }
 
@@ -84,13 +91,11 @@ export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
         console.log("path select", content, actorNr);
         singleton.getInstance().multiplayerScript(2, content, this.details);
         break;
-      case MultiPlayerEvent.GamePause:
-        console.log(content, actorNr);
-        singleton.getInstance().gamePause();
-        break;
+
       case MultiPlayerEvent.GameResume:
         console.log(content, actorNr);
         singleton.getInstance().gameResume();
+        this.popUp.destroy();
         break;
 
       case MultiPlayerEvent.PlayerWait:
@@ -110,14 +115,14 @@ export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
       case MultiPlayerEvent.GamePauseCounter:
         if (actorNr == 1) {
           singleton.getInstance().PauseCounter_A -= 1;
+          this.popUp = instantiate(singleton.getInstance().PausePopUp);
+          singleton.getInstance().CanvasNode.addChild(this.popUp);
         } else {
           singleton.getInstance().PauseCounter_B -= 1;
+          this.popUp = instantiate(singleton.getInstance().PausePopUp);
+          singleton.getInstance().CanvasNode.addChild(this.popUp);
         }
-
-        switch (code) {
-          default:
-        }
-        this.logger.debug("onEvent", code, "content:", content, "actor:", actorNr);
+        break;
     }
   }
 }

@@ -60,7 +60,8 @@ export class AntsButtonCreation extends Component {
   antsHolder_B: Node = null;
   @property({ type: Node })
   audiosource = null;
-
+  @property({ type: Prefab })
+  PausePopup: Prefab = null;
   @property({ type: Node })
   hiveHolder_A: Node = null;
 
@@ -90,6 +91,7 @@ export class AntsButtonCreation extends Component {
     this.singletonObject.CoinHolder = this.coinHolder;
     this.audiosource.getComponent(AudioSourceManager).initAudioSource();
     this.backgroundMusicEffect("gameplaySound");
+    this.singletonObject.PausePopUp = this.PausePopup;
     // this.singletonObject.Coins1 = this.coin1;
   }
 

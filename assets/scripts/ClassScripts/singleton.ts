@@ -52,7 +52,8 @@ export class singleton extends Component {
   private progresBar: Node = null;
   private PercentageNumber: Label = null;
   private Photonobj: AntvsAnt = null;
-  
+  private pausePopUp: Prefab = null;
+  AntPlayer: PLAYER = PLAYER.NONE;
   mapButton: string = "";
   maximumCoins = 300;
   multiplayer: boolean = false;
@@ -63,6 +64,7 @@ export class singleton extends Component {
   TwoPlayer: Node;
   PauseCounter_A: number = 3;
   PauseCounter_B: number = 3;
+  SingletonMapButtonCollector;
   private singleton() {}
   static getInstance(): singleton {
     if (!singleton.instance) {
@@ -77,6 +79,12 @@ export class singleton extends Component {
   set photonobj(photon: AntvsAnt) {
     this.Photonobj = photon;
     //  console.log("this------>set", photon);
+  }
+  get PausePopUp(): Prefab {
+    return this.pausePopUp;
+  }
+  set PausePopUp(value: Prefab) {
+    this.pausePopUp = value;
   }
   get percentageNumber(): Label {
     return this.PercentageNumber;

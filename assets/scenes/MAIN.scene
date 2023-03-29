@@ -585,11 +585,11 @@
       "b": 255,
       "a": 255
     },
-    "_string": "1 PLAYER",
+    "_string": "PLAY ONLINE",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 80,
-    "_fontSize": 80,
+    "_actualFontSize": 70,
+    "_fontSize": 70,
     "_fontFamily": "Arial",
     "_lineHeight": 100,
     "_overflow": 1,
@@ -881,11 +881,11 @@
       "b": 255,
       "a": 255
     },
-    "_string": "2 PLAYERS",
+    "_string": "PLAY OFFLINE",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 80,
-    "_fontSize": 80,
+    "_actualFontSize": 70,
+    "_fontSize": 70,
     "_fontFamily": "Arial",
     "_lineHeight": 100,
     "_overflow": 1,
@@ -2461,6 +2461,8 @@
     "_enabled": true,
     "__prefab": null,
     "SettingPopUp": null,
+    "Timer": null,
+    "Coinhandler": null,
     "_id": "7cmDE3gWJOD5PQajqZ6QYy"
   },
   {

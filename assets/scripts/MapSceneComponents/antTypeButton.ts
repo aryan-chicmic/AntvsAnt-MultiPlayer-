@@ -84,8 +84,12 @@ export class antTypeButton extends Component {
    */
   playerPathButton() {
     if (this.AntPlayer == PLAYER.PLAYER1) {
+      this.SingletonObj.AntPlayer = this.AntPlayer;
       this.antPathDeciderButton(this.AntPlayer, "A");
-    } else if (this.AntPlayer == PLAYER.PLAYER2) this.antPathDeciderButton(this.AntPlayer, "B");
+    } else if (this.AntPlayer == PLAYER.PLAYER2) {
+      this.antPathDeciderButton(this.AntPlayer, "B");
+      this.SingletonObj.AntPlayer = this.AntPlayer;
+    }
   }
   /**
    * Instantiate Path Decider Location Button At Different Path,
@@ -311,7 +315,6 @@ export class antTypeButton extends Component {
       var positiontoCanvas = this.SingletonObj.CanvasNode.getComponent(
         conversion
       ).convertingToNodeAR(pathObjGroup, `${this.PathSelected[7]}A`);
-   
     } else if (this.AntPlayer == PLAYER.PLAYER2) {
       var positiontoCanvas = this.SingletonObj.CanvasNode.getComponent(
         conversion

@@ -2,6 +2,7 @@
  * @description Initial Map Button Setter and their working
  */
 import { _decorator, Component, Node, director, Label, UITransform } from "cc";
+import AntvsAnt from "../AntvsAnt/PhotonClass";
 import AudioControllerObject from "../ClassScripts/AudioController";
 import { MultiPlayerEvent } from "../ClassScripts/constants";
 import { singleton } from "../ClassScripts/singleton";
@@ -14,9 +15,11 @@ export class MapButtonSetter extends Component {
   label: Label = null;
   mapNumber: Number = 0;
   MapButtonName = "";
+  SERVER: AntvsAnt = null;
   singletonObject: singleton;
   onLoad() {
     this.singletonObject = singleton.getInstance();
+    this.SERVER = this.singletonObject.photonobj;
   }
   start() {}
   buttonClickedSoundEffect(ClipName: string) {
@@ -43,8 +46,12 @@ export class MapButtonSetter extends Component {
    * @description onClicking of respective Map button
    */
   onClickofMapButton() {
+    if (this.singletonObject.multiplayer == true) {
+      this.SERVER.connectToServer();
+      this.singletonObject.Loader.active = true;
+    }
+    this.singletonObject.SingletonMapButtonCollector.active = false;
     this.buttonClickedSoundEffect("buttonClickSound");
-
     this.MapButtonName = this.label.string;
     this.singletonObject.MapAssigner = this.MapButtonName;
     this.multiplayerEventRaise();
@@ -71,7 +78,9 @@ export class MapButtonSetter extends Component {
     );
   }
   loadMap() {
-    director.loadScene("MAP");
+    if (this.singletonObject.multiplayer == false) {
+      director.loadScene("MAP");
+    }
   }
   update(deltaTime: number) {}
 }

@@ -32,7 +32,7 @@ export class MapButtonCreation extends Component {
   button: Node = null;
   countofMaps: number = 3;
   SingletonObject: singleton = null;
-  SERVER: AntvsAnt = null;
+
   onLoad() {
     //   this.onClickedPlayerOneButton();
   }
@@ -47,21 +47,23 @@ export class MapButtonCreation extends Component {
     this.SingletonObject.TwoPlayer = this.player2_node;
 
     this.loader.active = false;
-    this.SERVER = this.SingletonObject.photonobj;
   }
   /**
    * @description on clicking button for Player1
    */
   onClickedPlayerOneButton() {
     //console.log("photon class", this.SERVER);
-    this.SERVER.connectToServer();
+    this.player1_node.active = false;
+    this.player2_node.active = false;
+    this.help_node.active = false;
+    this.quit_node.active = false;
     this.SingletonObject.multiplayer = true;
-    this.loader.active = true;
-    this.player2_node.getComponent(Button).interactable = false;
+    // this.loader.active = true;
     console.log("Player One Under process");
     this.buttonClickedSoundEffect("buttonClickSound");
+    this.mapButtonInstantiate();
   }
-  /**sssss
+  /**
    * @description on clicking button for Player2 -> making of map choosing buttons
    */
   mapButtonCreator() {
@@ -70,14 +72,13 @@ export class MapButtonCreation extends Component {
     this.player2_node.active = false;
     this.help_node.active = false;
     this.quit_node.active = false;
-    this.loader.active = true;
+    // this.loader.active = true;
     this.buttonClickedSoundEffect("buttonClickSound");
-    // this.SERVER.raiseEvent(2, "Player 2 Button Clicked", {
-    //   targetActors: [this.SERVER.Actor],
-    // });
-
-    this.loader.active = false;
-
+    // this.loader.active = false;
+    this.mapButtonInstantiate();
+  }
+  mapButtonInstantiate() {
+    this.SingletonObject.SingletonMapButtonCollector = this.mapButtonCollector;
     for (var mapbuttoncount = 1; mapbuttoncount <= this.countofMaps; mapbuttoncount++) {
       this.button = instantiate(this.mapButtonPrefab);
 
@@ -86,7 +87,6 @@ export class MapButtonCreation extends Component {
         .setButtonPosition(this.mapButtonCollector, mapbuttoncount);
     }
   }
-
   onClickHelpButton() {
     console.log("Help Button Clicked");
     this.buttonClickedSoundEffect("buttonClickSound");
