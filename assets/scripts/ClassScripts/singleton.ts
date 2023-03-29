@@ -19,6 +19,7 @@ import {
   game,
 } from "cc";
 import AntvsAnt from "../AntvsAnt/PhotonClass";
+import { FighterAntScript } from "../Gameplay/FighterAntScript";
 import { antTypeButton } from "../MapSceneComponents/antTypeButton";
 import { PLAYER } from "./constants";
 const { ccclass, property } = _decorator;
@@ -47,18 +48,21 @@ export class singleton extends Component {
   static Map: TiledMap;
   private hiveCountA: Number = 0;
   private hiveCountB: Number = 0;
-  mapButton: string = "";
-  maximumCoins = 300;
   private percenatge: number = 0;
   private progresBar: Node = null;
   private PercentageNumber: Label = null;
   private Photonobj: AntvsAnt = null;
-
+  
+  mapButton: string = "";
+  maximumCoins = 300;
   multiplayer: boolean = false;
   script: antTypeButton;
+  scriptofAnt: FighterAntScript;
   whichActor;
-  Loader:Node;
-  TwoPlayer:Node;
+  Loader: Node;
+  TwoPlayer: Node;
+  PauseCounter_A: number = 3;
+  PauseCounter_B: number = 3;
   private singleton() {}
   static getInstance(): singleton {
     if (!singleton.instance) {
@@ -194,15 +198,6 @@ export class singleton extends Component {
         this.percenatge = Math.trunc((finishedAudio / totalAudio) * 100);
         this.PercentageNumber.string = this.percenatge.toString();
         this.progressbar.getComponent(ProgressBar).progress = this.percenatge;
-        // console.log(
-        //   "finish",
-        //   finishedAudio,
-        //   "total",
-        //   totalAudio,
-        //   "percantage ------>",
-        //   this.percenatge,
-        //   "%"
-        // );
       },
       (error, AudioClip) => {
         //on complete
@@ -234,15 +229,6 @@ export class singleton extends Component {
         this.percenatge = Math.trunc((finishedsprite / totalsprite) * 100);
         this.PercentageNumber.string = this.percenatge.toString();
         this.progressbar.getComponent(ProgressBar).progress = this.percenatge;
-        // console.log(
-        //   "finish",
-        //   finishedsprite,
-        //   "total",
-        //   totalsprite,
-        //   "percantage ------>",
-        //   this.percenatge,
-        //   "%"
-        // );
       },
       (error, SpriteFrames) => {
         //on complete
@@ -273,15 +259,6 @@ export class singleton extends Component {
         this.percenatge = Math.trunc((finishedMap / totalMap) * 100);
         this.PercentageNumber.string = this.percenatge.toString();
         this.progressbar.getComponent(ProgressBar).progress = this.percenatge;
-        // console.log(
-        //   "finish",
-        //   finishedMap,
-        //   "total",
-        //   totalMap,
-        //   "percantage ------>",
-        //   this.percenatge,
-        //   "%"
-        // );
       },
       (error, Maps) => {
         //on complete
@@ -304,6 +281,7 @@ export class singleton extends Component {
   quitGame() {
     director.resume();
     director.loadScene("MAIN");
+    this.multiplayer = false;
   }
   start() {}
 

@@ -13,8 +13,10 @@ import {
 import AudioControllerObject from "../ClassScripts/AudioController";
 import { AudioSourceManager } from "../ClassScripts/AudioSourceManager";
 import { PLAYER } from "../ClassScripts/constants";
+import { conversion } from "../ClassScripts/conversion";
 import { singleton } from "../ClassScripts/singleton";
 import { antTypeButton } from "./antTypeButton";
+import { coinUpdater } from "./coinUpdater";
 import { HiveScript } from "./HiveScript";
 const { ccclass, property } = _decorator;
 
@@ -121,15 +123,19 @@ export class AntsButtonCreation extends Component {
    */
   coinLabelInstantiater() {
     var coin1 = instantiate(this.coin1);
-    this.singletonObject.Coins1 = coin1;
     this.coinHolder.addChild(coin1);
+    this.singletonObject.Coins1 = coin1;
 
     var coin2 = instantiate(this.coin1);
     coin2.setPosition(0, 200);
     coin2.angle = 180;
-
-    this.singletonObject.Coins2 = coin2;
     this.coinHolder.addChild(coin2);
+    this.singletonObject.Coins2 = coin2;
+
+    if (this.singletonObject.multiplayer == false) {
+      coin1.getComponent(coinUpdater).updationStart();
+      coin2.getComponent(coinUpdater).updationStart();
+    }
   }
   /**
    * @description Checking total number of hives to be added
@@ -141,10 +147,16 @@ export class AntsButtonCreation extends Component {
     console.log(n);
     for (var hivecount = 1; hivecount <= n / 2; hivecount++) {
       let pathObj = this.mapNode.getComponent(TiledMap).getObjectGroup("HivesLayer");
-      var pathforhive_Obj = pathObj.getObject(`hive${hivecount}A`);
-      var pathforhive_Obj1 = pathObj.getObject(`hive${hivecount}B`);
-      this.hivePositionSetter(pathObj, pathforhive_Obj, "A");
-      this.hivePositionSetter(pathObj, pathforhive_Obj1, "B");
+      var position_A = this.singletonObject.CanvasNode.getComponent(conversion).convertingToNodeAR(
+        pathObj,
+        `hive${hivecount}A`
+      );
+      this.hivePositionSetter(position_A, "A");
+      var position_B = this.singletonObject.CanvasNode.getComponent(conversion).convertingToNodeAR(
+        pathObj,
+        `hive${hivecount}B`
+      );
+      this.hivePositionSetter(position_B, "B");
     }
   }
   /**
@@ -153,25 +165,12 @@ export class AntsButtonCreation extends Component {
    * @param pathforhive_Obj
    * @param Side
    */
-  hivePositionSetter(pathObj, pathforhive_Obj, Side) {
-    let worlPosOfBtn1 = pathObj.node
-      .getComponent(UITransform)
-      .convertToWorldSpaceAR(
-        new Vec3(
-          pathforhive_Obj.x - pathObj.node.getComponent(UITransform).width * 0.5,
-          pathforhive_Obj.y - pathObj.node.getComponent(UITransform).height * 0.5,
-          0
-        )
-      );
-    var pos_oneA = this.node
-      .getComponent(UITransform)
-      .convertToNodeSpaceAR(new Vec3(worlPosOfBtn1.x, worlPosOfBtn1.y));
-
+  hivePositionSetter(position, Side) {
     var hiveinstanstiater = instantiate(this.hive);
 
     hiveinstanstiater.getComponent(HiveScript).addSpecs(500, 10, 10);
 
-    hiveinstanstiater.setPosition(pos_oneA.x, pos_oneA.y, 0);
+    hiveinstanstiater.setPosition(position.x, position.y, 0);
     if (Side == "A") {
       this.hiveHolder_A.addChild(hiveinstanstiater);
     } else if (Side == "B") {

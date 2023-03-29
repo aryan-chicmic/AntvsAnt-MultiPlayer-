@@ -37,7 +37,7 @@ export class Collision extends Component {
   HiveofPlayerB: Rect = null;
   HiveofPlayerA: Rect = null;
   SingletonObj: singleton = null;
-
+  count: number = 0;
   antCollision(): any {
     for (
       var holder_A_Ant = 0;
@@ -137,6 +137,7 @@ export class Collision extends Component {
     var countofB_hive = this.SingletonObj.HiveHolder_B.children.length;
     if (antHealth <= 0) {
       Ant.destroy();
+      this.count += 1;
     } else if (hiveHealth <= 0) {
       // Hive.destroy();
       if (
@@ -173,10 +174,7 @@ export class Collision extends Component {
       director.pause();
       // game.end();
     }
-    // console.log("A", countofAhive);
-    // console.log("B", countofBhive);
-    // this.SingletonObj.
-    // console.log("whichHive", whichHiveHolder);
+  
 
     if (Ant != null) {
       TweenSystem.instance.ActionManager.resumeTarget(Ant);
@@ -200,6 +198,7 @@ export class Collision extends Component {
 
     if (healthOfAnt1 <= 0) {
       returnedNodes[0].destroy();
+      this.count += 1;
 
       if (returnedNodes[1] != null) {
         TweenSystem.instance.ActionManager.resumeTarget(returnedNodes[1]);
@@ -207,6 +206,7 @@ export class Collision extends Component {
     }
     if (healthOfAnt2 <= 0) {
       returnedNodes[1].destroy();
+      this.count += 1;
 
       if (returnedNodes[0] != null) {
         TweenSystem.instance.ActionManager.resumeTarget(returnedNodes[0]);
@@ -220,8 +220,7 @@ export class Collision extends Component {
   start() {}
 
   update(deltaTime: number) {
-    // console.log("A", this.SingletonObj.HiveHolder_A.children.length);
-    // console.log("B", this.SingletonObj.HiveHolder_B.children.length);
+    
     if (this.SingletonObj.AntsHolder_A != null && this.SingletonObj.AntsHolder_B != null) {
       let collidedAnt = this.antCollision();
       if (collidedAnt != null) {
@@ -234,5 +233,6 @@ export class Collision extends Component {
     if (anthiveCollision != null) {
       this.hive_ant_health(anthiveCollision);
     }
+    
   }
 }

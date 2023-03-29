@@ -9,6 +9,7 @@ import {
   AudioClip,
   AudioSource,
   resources,
+  Label,
 } from "cc";
 import AudioControllerObject from "../ClassScripts/AudioController";
 import { AudioSourceManager } from "../ClassScripts/AudioSourceManager";
@@ -32,6 +33,7 @@ export class IntialAntsMaker extends Component {
   @property({ type: Node })
   player1: Node = null;
   // Variable
+
   SingletonObject: singleton = null;
   /**
    * @description Play Background Music/Audio

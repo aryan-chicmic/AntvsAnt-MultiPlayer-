@@ -14,6 +14,7 @@ import {
   Vec3,
   Tween,
   Rect,
+  TweenSystem,
 } from "cc";
 import { PLAYER } from "../ClassScripts/constants";
 import { singleton } from "../ClassScripts/singleton";
@@ -47,9 +48,11 @@ export class FighterAntScript extends Component {
   returnedNodes: Node[] = null;
   generatedAntRect: Rect;
   otherAntsRect: Rect;
+  // antTweenArray: any[] = [];
 
   onLoad() {
     this.singletonObj = singleton.getInstance();
+    this.singletonObj.scriptofAnt = this;
   }
   /**
    *
@@ -106,17 +109,15 @@ export class FighterAntScript extends Component {
         .getComponent(UITransform)
         .convertToWorldSpaceAR(
           new Vec3(
-            Object[element].x -
-              pathObjGroup.node.getComponent(UITransform).width * 0.5,
-            Object[element].y -
-              pathObjGroup.node.getComponent(UITransform).height * 0.5,
+            Object[element].x - pathObjGroup.node.getComponent(UITransform).width * 0.5,
+            Object[element].y - pathObjGroup.node.getComponent(UITransform).height * 0.5,
             0
           )
         );
 
-      var pos_one = this.singletonObj.CanvasNode.getComponent(
-        UITransform
-      ).convertToNodeSpaceAR(new Vec3(worldpost));
+      var pos_one = this.singletonObj.CanvasNode.getComponent(UITransform).convertToNodeSpaceAR(
+        new Vec3(worldpost)
+      );
       let TurnPositionAndAngle = {
         POSITION: pos_one,
         TurnAngle: Object[element].Rotation,
@@ -125,7 +126,7 @@ export class FighterAntScript extends Component {
     }
 
     this.AntTween = tween(this.node);
-
+    // this.singletonObj.tweenHolder.push(this.AntTween);
     if (this.AntPlayer == PLAYER.PLAYER1) {
       this.antTweenMovement(positionArray);
     } else if (this.AntPlayer == PLAYER.PLAYER2) {
@@ -135,6 +136,7 @@ export class FighterAntScript extends Component {
     this.AntTween.start();
     this.checker = 1;
   }
+
   /**
    * @description Apply tween to every position of  Ant for movement
    * @param positionArray Array of Path Positions from which Ant Passes
@@ -143,24 +145,18 @@ export class FighterAntScript extends Component {
     let Old_Position = positionArray.pop().POSITION;
     for (let i = positionArray.length - 1; i >= 0; i--) {
       let NewPosition = positionArray[i].POSITION;
-      let TotalDistance = this.distanceBetweenPosition(
-        Old_Position,
-        NewPosition
-      );
+      let TotalDistance = this.distanceBetweenPosition(Old_Position, NewPosition);
 
       let Time =
-        TotalDistance /
-        this.GeneratedAnt.getComponent(FighterAntScript).TimeToCoverChangeInY;
+        TotalDistance / this.GeneratedAnt.getComponent(FighterAntScript).TimeToCoverChangeInY;
 
       this.AntTween.to(Time, {
         position: new Vec3(NewPosition),
       }).call(() => {
         if (this.AntPlayer == PLAYER.PLAYER2) {
-          this.GeneratedAnt.angle =
-            this.GeneratedAnt.angle + positionArray[i].TurnAngle;
+          this.GeneratedAnt.angle = this.GeneratedAnt.angle + positionArray[i].TurnAngle;
         } else if (this.AntPlayer == PLAYER.PLAYER1) {
-          this.GeneratedAnt.angle =
-            this.GeneratedAnt.angle - positionArray[i].TurnAngle;
+          this.GeneratedAnt.angle = this.GeneratedAnt.angle - positionArray[i].TurnAngle;
         }
       });
 

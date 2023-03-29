@@ -24,10 +24,11 @@ import {
 const { ccclass, property } = _decorator;
 import { PathSelectorButton } from "./PathSelectorButton";
 import { coinUpdater } from "./coinUpdater";
-import { PLAYER } from "../ClassScripts/constants";
+import { MultiPlayerEvent, PLAYER } from "../ClassScripts/constants";
 import { singleton } from "../ClassScripts/singleton";
 import { AntGenerateManager } from "../Gameplay/AntGenerateManager";
 import { FighterAntScript } from "../Gameplay/FighterAntScript";
+import { conversion } from "../ClassScripts/conversion";
 
 @ccclass("antTypeButton")
 export class antTypeButton extends Component {
@@ -70,8 +71,9 @@ export class antTypeButton extends Component {
     dataLoader = dataLoader.AntSpecs;
     for (let index = 0; index < dataLoader.length; index++) {
       if (index == antbuttoncount) {
-        this.antSprite.getComponent(Sprite).spriteFrame =
-          this.SingletonObj.getSpriteFrame(dataLoader[index].Sprite);
+        this.antSprite.getComponent(Sprite).spriteFrame = this.SingletonObj.getSpriteFrame(
+          dataLoader[index].Sprite
+        );
         this.coinLabel.string = dataLoader[index].CoinAlloted;
         newNode.name = dataLoader[index].AntName;
       }
@@ -83,8 +85,7 @@ export class antTypeButton extends Component {
   playerPathButton() {
     if (this.AntPlayer == PLAYER.PLAYER1) {
       this.antPathDeciderButton(this.AntPlayer, "A");
-    } else if (this.AntPlayer == PLAYER.PLAYER2)
-      this.antPathDeciderButton(this.AntPlayer, "B");
+    } else if (this.AntPlayer == PLAYER.PLAYER2) this.antPathDeciderButton(this.AntPlayer, "B");
   }
   /**
    * Instantiate Path Decider Location Button At Different Path,
@@ -93,24 +94,16 @@ export class antTypeButton extends Component {
   antPathDeciderButton(player: PLAYER, side: string) {
     let Map: TiledMap = singleton.Map;
     let numberofobject = Map.getComponent(TiledMap).getObjectGroups().length;
-    for (
-      var objectcount = 1;
-      objectcount <= numberofobject - 2;
-      objectcount++
-    ) {
-      let pathObj = Map.getComponent(TiledMap).getObjectGroup(
-        `PathObj${objectcount}`
-      );
+    for (var objectcount = 1; objectcount <= numberofobject - 2; objectcount++) {
+      let pathObj = Map.getComponent(TiledMap).getObjectGroup(`PathObj${objectcount}`);
 
-      var positiontoCan = this.conversion(
+      var positiontoCan = this.SingletonObj.CanvasNode.getComponent(conversion).convertingToNodeAR(
         pathObj,
         `Button${objectcount}${side}`
       );
       var buttonclick = instantiate(this.PathSelectButton);
       buttonclick.setPosition(positiontoCan);
-      buttonclick
-        .getChildByName("Name")
-        .getComponent(Label).string = `PathObj${objectcount}`;
+      buttonclick.getChildByName("Name").getComponent(Label).string = `PathObj${objectcount}`;
       if (
         player == PLAYER.PLAYER1 &&
         this.SingletonObj.PathDeciderNodeA.children.length < numberofobject - 2
@@ -156,7 +149,7 @@ export class antTypeButton extends Component {
     } else {
       actorplayer = 1;
     }
-    this.SingletonObj.photonobj.raiseEvent(4, this.PathSelected, {
+    this.SingletonObj.photonobj.raiseEvent(MultiPlayerEvent.PathSelected, this.PathSelected, {
       targetActors: [actorplayer],
     });
 
@@ -168,9 +161,15 @@ export class antTypeButton extends Component {
    * @description Ant Generated After Path of Ant Decided According to Player Side
    */
   antGenerationAfterPathDecided() {
-    if (this.AntPlayer == PLAYER.PLAYER1) {
+    if (
+      this.AntPlayer == PLAYER.PLAYER1 &&
+      this.SingletonObj.PathDeciderNodeA.name == "PathDeciderNodeA"
+    ) {
       this.SingletonObj.PathDeciderNodeA.destroy();
-    } else if (this.AntPlayer == PLAYER.PLAYER2) {
+    } else if (
+      this.AntPlayer == PLAYER.PLAYER2 &&
+      this.SingletonObj.PathDeciderNodeB.name == "PathDeciderNodeB"
+    ) {
       this.SingletonObj.PathDeciderNodeB.destroy();
     }
 
@@ -220,9 +219,7 @@ export class antTypeButton extends Component {
      */
     if (this.AntPlayer == PLAYER.PLAYER1) {
       var isSufficientCoins =
-        this.SingletonObj.Coins1.getComponent(coinUpdater).checkCoin(
-          CoinAlloted
-        );
+        this.SingletonObj.Coins1.getComponent(coinUpdater).checkCoin(CoinAlloted);
       if (!isSufficientCoins) {
         var coinsufficientPopUp = instantiate(this.CoinSufficientPopUp);
         coinsufficientPopUp.setPosition(0, 0);
@@ -235,9 +232,7 @@ export class antTypeButton extends Component {
     // if (!this.SingletonObj.multiplayer) {
     if (this.AntPlayer == PLAYER.PLAYER2) {
       var isSufficientCoins =
-        this.SingletonObj.Coins2.getComponent(coinUpdater).checkCoin(
-          CoinAlloted
-        );
+        this.SingletonObj.Coins2.getComponent(coinUpdater).checkCoin(CoinAlloted);
       if (!isSufficientCoins && !this.SingletonObj.multiplayer) {
         var coinsufficientPopUp = instantiate(this.CoinSufficientPopUp);
         coinsufficientPopUp.setPosition(0, 0);
@@ -268,10 +263,7 @@ export class antTypeButton extends Component {
     }
     antHolder.addChild(this.GeneratedAnt);
     whichCoinLabel.getComponent(coinUpdater).coinDeduction(CoinAlloted);
-    this.GeneratedAnt.getComponent(FighterAntScript).antMovement(
-      this.PathSelected,
-      whichPlayer
-    );
+    this.GeneratedAnt.getComponent(FighterAntScript).antMovement(this.PathSelected, whichPlayer);
   }
   /**
    *
@@ -284,7 +276,7 @@ export class antTypeButton extends Component {
     } else {
       this.actor = 1;
     }
-    this.SingletonObj.photonobj.raiseEvent(3, this.AntAlldetails, {
+    this.SingletonObj.photonobj.raiseEvent(MultiPlayerEvent.AntDetail, this.AntAlldetails, {
       targetActors: [this.actor],
     });
     if (
@@ -294,9 +286,7 @@ export class antTypeButton extends Component {
       var newNode = this.SingletonObj.PathDeciderNodeA;
       newNode = new Node("PathDeciderNodeA");
       this.SingletonObj.PathDeciderNodeA = newNode;
-      this.SingletonObj.MapComponents.addChild(
-        this.SingletonObj.PathDeciderNodeA
-      );
+      this.SingletonObj.MapComponents.addChild(this.SingletonObj.PathDeciderNodeA);
     } else if (
       this.AntPlayer == PLAYER.PLAYER2 &&
       this.SingletonObj.PathDeciderNodeB.name != "PathDeciderNodeB"
@@ -304,9 +294,7 @@ export class antTypeButton extends Component {
       var newNode1 = this.SingletonObj.PathDeciderNodeB;
       newNode1 = new Node("PathDeciderNodeB");
       this.SingletonObj.PathDeciderNodeB = newNode1;
-      this.SingletonObj.MapComponents.addChild(
-        this.SingletonObj.PathDeciderNodeB
-      );
+      this.SingletonObj.MapComponents.addChild(this.SingletonObj.PathDeciderNodeB);
     }
 
     this.playerPathButton();
@@ -316,22 +304,18 @@ export class antTypeButton extends Component {
    * @returns Vec3 Ant Position According to Player Side
    */
   generatedAntPosition(): Vec3 {
-    var pathObjGroup = singleton.Map.getObjectGroup(
-      `PathObj${this.PathSelected[7]}`
-    );
+    var pathObjGroup = singleton.Map.getObjectGroup(`PathObj${this.PathSelected[7]}`);
     if (this.AntPlayer == PLAYER.PLAYER1) {
       // var groupObj = pathObjGroup.getObject(`${this.PathSelected[7]}A`);
 
-      var positiontoCanvas = this.conversion(
-        pathObjGroup,
-        `${this.PathSelected[7]}A`
-      );
-      console.log("pooossition", positiontoCanvas);
+      var positiontoCanvas = this.SingletonObj.CanvasNode.getComponent(
+        conversion
+      ).convertingToNodeAR(pathObjGroup, `${this.PathSelected[7]}A`);
+   
     } else if (this.AntPlayer == PLAYER.PLAYER2) {
-      var positiontoCanvas = this.conversion(
-        pathObjGroup,
-        `${this.PathSelected[7]}B`
-      );
+      var positiontoCanvas = this.SingletonObj.CanvasNode.getComponent(
+        conversion
+      ).convertingToNodeAR(pathObjGroup, `${this.PathSelected[7]}B`);
       // var groupObj = pathObjGroup.getObject(`${this.PathSelected[7]}B`);
     }
 
@@ -354,22 +338,6 @@ export class antTypeButton extends Component {
   start() {
     this.SingletonObj.script = this;
   }
-  conversion(pathObj, MapObject) {
-    var button_pos = pathObj.getObject(MapObject);
-    let worlPosOfBtn = pathObj.node
-      .getComponent(UITransform)
-      .convertToWorldSpaceAR(
-        new Vec3(
-          button_pos.x - pathObj.node.getComponent(UITransform).width * 0.5,
-          button_pos.y - pathObj.node.getComponent(UITransform).height * 0.5,
-          0
-        )
-      );
 
-    var positiontoCan = this.SingletonObj.CanvasNode.getComponent(
-      UITransform
-    ).convertToNodeSpaceAR(new Vec3(worlPosOfBtn.x, worlPosOfBtn.y));
-    return positiontoCan;
-  }
   update(deltaTime: number) {}
 }

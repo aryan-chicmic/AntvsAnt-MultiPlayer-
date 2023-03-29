@@ -3,6 +3,7 @@
  */
 import { _decorator, Component, Node, director, Label, UITransform } from "cc";
 import AudioControllerObject from "../ClassScripts/AudioController";
+import { MultiPlayerEvent } from "../ClassScripts/constants";
 import { singleton } from "../ClassScripts/singleton";
 
 const { ccclass, property } = _decorator;
@@ -46,9 +47,31 @@ export class MapButtonSetter extends Component {
 
     this.MapButtonName = this.label.string;
     this.singletonObject.MapAssigner = this.MapButtonName;
-
-    director.loadScene("MAP");
+    this.multiplayerEventRaise();
+    this.loadMap();
   }
 
+  multiplayerEventRaise() {
+    let OtherActor;
+    if (this.singletonObject.whichActor == 1) {
+      OtherActor = 2;
+    } else {
+      OtherActor = 1;
+    }
+    this.singletonObject.photonobj.raiseEvent(
+      MultiPlayerEvent.PlayerWait,
+      "Waiting for Other Player",
+      { targetActors: [this.singletonObject.whichActor] }
+    );
+
+    this.singletonObject.photonobj.raiseEvent(
+      MultiPlayerEvent.PlayerWait,
+      "Waiting for Other Player",
+      { targetActors: [OtherActor] }
+    );
+  }
+  loadMap() {
+    director.loadScene("MAP");
+  }
   update(deltaTime: number) {}
 }

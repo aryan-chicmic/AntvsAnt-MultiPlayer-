@@ -17,3 +17,11 @@ export enum PLAYER {
   PLAYER1 = "PLAYER1",
   PLAYER2 = "PLAYER2",
 }
+export enum MultiPlayerEvent {
+  AntDetail = 1,
+  PathSelected = 2,
+  GamePause = 3,
+  GameResume = 4,
+  PlayerWait = 5,
+  GamePauseCounter = 6,
+}

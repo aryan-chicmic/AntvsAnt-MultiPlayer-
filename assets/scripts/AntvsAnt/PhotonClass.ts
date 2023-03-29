@@ -2,6 +2,8 @@ import { singleton } from "../ClassScripts/singleton";
 // <reference path="Photon/Photon-Javascript_SDK.d.ts"/>
 import cloudAppInfo from "../AntvsAnt/cloud-app-info";
 import { Button } from "cc";
+import { MultiPlayerEvent } from "../ClassScripts/constants";
+import { coinUpdater } from "../MapSceneComponents/coinUpdater";
 // fetching app info global variable while in global context
 
 export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
@@ -10,7 +12,7 @@ export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
   logger = new Exitgames.Common.Logger("Demo:");
   details;
   leave = 0;
-
+  MapClickCount = 0;
   constructor() {
     console.log("Constructor callss");
     super(1, "7f112f40-1f4b-491d-abfb-f9e38cb5ac8f", "1.0");
@@ -45,8 +47,7 @@ export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
     this.leave = 0;
     if (actor.actorNr == 2) {
       singleton.getInstance().Loader.active = false;
-      singleton.getInstance().TwoPlayer.getComponent(Button).interactable =
-        true;
+      singleton.getInstance().TwoPlayer.getComponent(Button).interactable = true;
     }
   }
 
@@ -60,33 +61,64 @@ export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
       singleton.getInstance().quitGame();
     }
   }
-  onEvent(code: number, content: any, actorNr: number) {
+  onEvent(code: MultiPlayerEvent, content: any, actorNr: number) {
     //  console.log("code----------", code, "content", content, "actorNr", actorNr);
     switch (code) {
-      case 1:
-        break;
-      case 2:
-        break;
-      case 3:
+      case MultiPlayerEvent.AntDetail:
         console.log(content);
         this.details = content;
         break;
-      case 4:
+      case MultiPlayerEvent.PathSelected:
         console.log("path select", content, actorNr);
-
         singleton.getInstance().multiplayerScript(2, content, this.details);
         break;
-      case 6:
-        // pause game
+      case MultiPlayerEvent.GamePause:
         console.log(content, actorNr);
         singleton.getInstance().gamePause();
         break;
-      case 7:
+      case MultiPlayerEvent.AntDetail:
+        console.log(content);
+        this.details = content;
+        break;
+      case MultiPlayerEvent.PathSelected:
+        console.log("path select", content, actorNr);
+        singleton.getInstance().multiplayerScript(2, content, this.details);
+        break;
+      case MultiPlayerEvent.GamePause:
+        console.log(content, actorNr);
+        singleton.getInstance().gamePause();
+        break;
+      case MultiPlayerEvent.GameResume:
         console.log(content, actorNr);
         singleton.getInstance().gameResume();
-      default:
+        break;
+
+      case MultiPlayerEvent.PlayerWait:
+        this.MapClickCount++;
+
+        console.log("mapclick", this.MapClickCount, "COOOntent", content);
+        if (this.MapClickCount == 2) {
+          this.MapClickCount = 0;
+
+          setTimeout(() => {
+            singleton.getInstance().Coins1.getComponent(coinUpdater).updationStart();
+            singleton.getInstance().Coins2.getComponent(coinUpdater).updationStart();
+          }, 1000);
+        }
+        break;
+
+      case MultiPlayerEvent.GamePauseCounter:
+        if (actorNr == 1) {
+          singleton.getInstance().PauseCounter_A -= 1;
+        } else {
+          singleton.getInstance().PauseCounter_B -= 1;
+        }
+
+        switch (code) {
+          default:
+        }
+        this.logger.debug("onEvent", code, "content:", content, "actor:", actorNr);
     }
-    this.logger.debug("onEvent", code, "content:", content, "actor:", actorNr);
   }
 }
 singleton.getInstance().photonobj = new AntvsAnt();

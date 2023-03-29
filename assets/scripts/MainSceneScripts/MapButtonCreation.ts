@@ -72,9 +72,9 @@ export class MapButtonCreation extends Component {
     this.quit_node.active = false;
     this.loader.active = true;
     this.buttonClickedSoundEffect("buttonClickSound");
-    this.SERVER.raiseEvent(2, "Player 2 Button Clicked", {
-      targetActors: [this.SERVER.Actor],
-    });
+    // this.SERVER.raiseEvent(2, "Player 2 Button Clicked", {
+    //   targetActors: [this.SERVER.Actor],
+    // });
 
     this.loader.active = false;
 

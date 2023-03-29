@@ -21,7 +21,7 @@
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 110
+      "__id__": 111
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -52,7 +52,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 120
+      "__id__": 121
     },
     "_id": "7c584eca-949f-4940-a1f2-c3cd8985bf9b"
   },
@@ -93,6 +93,9 @@
       },
       {
         "__id__": 109
+      },
+      {
+        "__id__": 110
       }
     ],
     "_prefab": null,
@@ -3078,6 +3081,10 @@
     "SettingPopUp": {
       "__id__": 72
     },
+    "Timer": null,
+    "Coinhandler": {
+      "__id__": 57
+    },
     "_id": "ecMGMFjwxAgKjTePietu0W"
   },
   {
@@ -3256,6 +3263,17 @@
     "_id": "37cXQBwtJIGL2xPRWerlU+"
   },
   {
+    "__type__": "21594jkIAlKO7fd4imqR4Ic",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 2
+    },
+    "_enabled": true,
+    "__prefab": null,
+    "_id": "caZVVGr9ZGB6MOlyieMhkf"
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": null,
     "asset": null,
@@ -3263,13 +3281,13 @@
     "instance": null,
     "targetOverrides": [
       {
-        "__id__": 111
+        "__id__": 112
       },
       {
-        "__id__": 114
+        "__id__": 115
       },
       {
-        "__id__": 117
+        "__id__": 118
       }
     ],
     "nestedPrefabInstanceRoots": [
@@ -3287,7 +3305,7 @@
       "__id__": 72
     },
     "sourceInfo": {
-      "__id__": 112
+      "__id__": 113
     },
     "propertyPath": [
       "_target"
@@ -3296,7 +3314,7 @@
       "__id__": 72
     },
     "targetInfo": {
-      "__id__": 113
+      "__id__": 114
     }
   },
   {
@@ -3317,7 +3335,7 @@
       "__id__": 72
     },
     "sourceInfo": {
-      "__id__": 115
+      "__id__": 116
     },
     "propertyPath": [
       "_target"
@@ -3326,7 +3344,7 @@
       "__id__": 72
     },
     "targetInfo": {
-      "__id__": 116
+      "__id__": 117
     }
   },
   {
@@ -3347,7 +3365,7 @@
       "__id__": 72
     },
     "sourceInfo": {
-      "__id__": 118
+      "__id__": 119
     },
     "propertyPath": [
       "_target"
@@ -3356,7 +3374,7 @@
       "__id__": 72
     },
     "targetInfo": {
-      "__id__": 119
+      "__id__": 120
     }
   },
   {
@@ -3374,22 +3392,22 @@
   {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 121
-    },
-    "shadows": {
       "__id__": 122
     },
-    "_skybox": {
+    "shadows": {
       "__id__": 123
     },
-    "fog": {
+    "_skybox": {
       "__id__": 124
     },
-    "octree": {
+    "fog": {
       "__id__": 125
     },
-    "lightProbeInfo": {
+    "octree": {
       "__id__": 126
+    },
+    "lightProbeInfo": {
+      "__id__": 127
     },
     "bakedWithStationaryMainLight": false
   },
