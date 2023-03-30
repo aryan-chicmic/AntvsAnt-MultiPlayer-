@@ -678,7 +678,7 @@
     },
     "component": "",
     "_componentId": "7a1efvNJmdLApsrE9seh6gC",
-    "handler": "resumeGame",
+    "handler": "gameResume",
     "customEventData": ""
   },
   {
@@ -2769,7 +2769,6 @@
       "__uuid__": "64039987-e8c2-41ef-9523-653739244070",
       "__expectedType__": "cc.Prefab"
     },
-    "Timer": null,
     "Coinhandler": null,
     "_id": ""
   },

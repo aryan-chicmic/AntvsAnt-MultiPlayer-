@@ -52,8 +52,14 @@ export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
 
       setTimeout(() => {
         singleton.getInstance().Loader.active = false;
-        singleton.getInstance().Coins1.getComponent(coinUpdater).updationStart();
-        singleton.getInstance().Coins2.getComponent(coinUpdater).updationStart();
+        singleton
+          .getInstance()
+          .Coins1.getComponent(coinUpdater)
+          .updationStart();
+        singleton
+          .getInstance()
+          .Coins2.getComponent(coinUpdater)
+          .updationStart();
       }, 500);
     }
   }
@@ -95,7 +101,9 @@ export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
       case MultiPlayerEvent.GameResume:
         console.log(content, actorNr);
         singleton.getInstance().gameResume();
-        this.popUp.destroy();
+        if (this.popUp != null) {
+          this.popUp.destroy();
+        }
         break;
 
       case MultiPlayerEvent.PlayerWait:
@@ -106,8 +114,14 @@ export default class AntvsAnt extends Photon.LoadBalancing.LoadBalancingClient {
           this.MapClickCount = 0;
 
           setTimeout(() => {
-            singleton.getInstance().Coins1.getComponent(coinUpdater).updationStart();
-            singleton.getInstance().Coins2.getComponent(coinUpdater).updationStart();
+            singleton
+              .getInstance()
+              .Coins1.getComponent(coinUpdater)
+              .updationStart();
+            singleton
+              .getInstance()
+              .Coins2.getComponent(coinUpdater)
+              .updationStart();
           }, 1000);
         }
         break;

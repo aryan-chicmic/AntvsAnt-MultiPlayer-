@@ -101,9 +101,13 @@ export class menuButton extends Component {
    * Resume the Game After clicking Resume Button
    */
   gameResume() {
-    this.SingletonObject.photonobj.raiseEvent(MultiPlayerEvent.GameResume, "Game Resume by", {
-      targetActors: [this.actor],
-    });
+    this.SingletonObject.photonobj.raiseEvent(
+      MultiPlayerEvent.GameResume,
+      "Game Resume by",
+      {
+        targetActors: [this.actor],
+      }
+    );
     this.buttonClickedSoundEffect("buttonClickSound");
 
     this.SettingPopUp.active = false;
@@ -119,25 +123,46 @@ export class menuButton extends Component {
   }
   gamePause() {
     if (this.actor == 1) {
-      this.SingletonObject.photonobj.raiseEvent(MultiPlayerEvent.GamePauseCounter, "PauseCounter", {
-        targetActors: [this.actor],
-      });
+      
+      this.SingletonObject.photonobj.raiseEvent(
+        MultiPlayerEvent.GamePauseCounter,
+        "PauseCounter",
+        {
+          targetActors: [this.actor],
+        }
+      );
 
       this.SingletonObject.PauseCounter_B -= 1;
-      this.SettingPopUp.getChildByName("PauseNode").children.length -= 1;
+      this.SettingPopUp.getChildByName("PauseNode").children[
+        this.SettingPopUp.getChildByName("PauseNode").children.length - 1
+      ].destroy(); //destroy
     } else {
-      this.SingletonObject.photonobj.raiseEvent(MultiPlayerEvent.GamePauseCounter, "PauseCounter", {
-        targetActors: [this.actor],
-      });
+   
+      this.SingletonObject.photonobj.raiseEvent(
+        MultiPlayerEvent.GamePauseCounter,
+        "PauseCounter",
+        {
+          targetActors: [this.actor],
+        }
+      );
 
       this.SingletonObject.PauseCounter_A -= 1;
-      this.SettingPopUp.getChildByName("PauseNode").children.length -= 1;
+      this.SettingPopUp.getChildByName("PauseNode").children[
+        this.SettingPopUp.getChildByName("PauseNode").children.length - 1
+      ].destroy();
     }
-    console.log(this.SingletonObject.PauseCounter_A, this.SingletonObject.PauseCounter_B);
+    console.log(
+      this.SingletonObject.PauseCounter_A,
+      this.SingletonObject.PauseCounter_B
+    );
 
-    this.SingletonObject.photonobj.raiseEvent(MultiPlayerEvent.GamePause, "Game Pause by", {
-      targetActors: [this.actor],
-    });
+    this.SingletonObject.photonobj.raiseEvent(
+      MultiPlayerEvent.GamePause,
+      "Game Pause by",
+      {
+        targetActors: [this.actor],
+      }
+    );
     this.seconds = 20;
     console.log("UNSCHEDULER");
     // console.log(this.SingletonObject.tweenHolder);
@@ -157,7 +182,9 @@ export class menuButton extends Component {
       this.seconds -= 1;
       // console.log(this.seconds);
 
-      this.SettingPopUp.getChildByName("Timer").getComponent(Label).string = `${this.seconds}`;
+      this.SettingPopUp.getChildByName("Timer").getComponent(
+        Label
+      ).string = `${this.seconds}`;
     }
     if (this.seconds == 0) {
       this.gameResume();
